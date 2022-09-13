@@ -1,6 +1,6 @@
 import { useDarkTheme } from "../../store/themeStore";
-import Button from "components/buttons";
 import { useEffect } from "react";
+import Home from "pages/home";
 
 function App() {
   const { theme, toggleTheme } = useDarkTheme();
@@ -11,8 +11,10 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="w-screen h-screen bg-slate-300 dark:bg-slate-700 flex justify-center items-center">
-      <h1 className="text-5xl text-blue-900 font-black">NLW</h1>
+    <div className="w-screen h-screen p-0 m-0 overflow-hidden">
+      <div className="w-full max-h-screen overflow-x-hidden overflow-y-auto flex flex-col">
+        <Home />
+      </div>
     </div>
   );
 }

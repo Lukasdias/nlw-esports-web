@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
-  content: ["./src/**/*.tsx"],
+  content: ["./src/**/*.tsx", "./*.html"],
   theme: {
     fontFamily: {
       sans: ["Inter", "sans-serif"],
@@ -9,6 +9,12 @@ module.exports = {
       serif: ["Inter", "serif"],
     },
     extend: {
+      colors: {
+        background: {
+          primary: "#1E1E1E",
+          secondary: "#2A2634",
+        },
+      },
       backgroundImage: {
         galaxy: "url('/background-galaxy.png')",
         "nlw-gradient":

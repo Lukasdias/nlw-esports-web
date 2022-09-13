@@ -14,8 +14,11 @@
     "axios": "^0.27.2",
     "framer-motion": "^7.3.2",
     "immer": "^9.0.15",
+    "jotai": "^1.8.3",
+    "phosphor-react": "^1.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.3.0",
     "vite-tsconfig-paths": "^3.5.0",
     "zustand": "^4.1.1"
   },
