@@ -9,7 +9,8 @@ interface GameCardProps extends GameSchema {
 const Card: React.FC<GameCardProps> = (props) => {
   const { image, name, onClick, adsCount } = props;
   return (
-    <motion.div
+    <motion.a 
+      href="#"
       className="flex flex-col justify-end gap-1 relative w-full max-w-[240px] h-[240px]  max-h-[240px] rounded-xl shadow-lg cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl group overflow-hidden mx-auto"
       onClick={onClick}
     >
@@ -24,7 +25,7 @@ const Card: React.FC<GameCardProps> = (props) => {
       <p className="text-white text-sm relative z-10 pl-2 mb-2">
         {adsCount === 0 ? "Nenhum anúncio" : `${adsCount} ads`}
       </p>
-    </motion.div>
+    </motion.a>
   );
 };
 
