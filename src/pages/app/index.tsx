@@ -1,4 +1,4 @@
-import { useDarkTheme } from "../../store/themeStore";
+import { useDarkTheme } from "stores/themeStore";
 import { useEffect } from "react";
 import Home from "pages/home";
 

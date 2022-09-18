@@ -9,6 +9,7 @@ import Game4 from "/game-4.png";
 import Game5 from "/game-5.png";
 import Game6 from "/game-6.png";
 import Card from "components/gameGrids/card";
+import { Game } from "../../api/types";
 
 const TemplateCard = {
   image: "",
@@ -17,48 +18,11 @@ const TemplateCard = {
   onClick: () => {},
 };
 
-export function GameGrid() {
-  const [games, setGames] = useState<typeof TemplateCard[]>([]);
-  useEffect(() => {
-    setGames([
-      {
-        ...TemplateCard,
-        image: Game1,
-        name: "Game 1",
-        adsCount: 0,
-      },
-      {
-        ...TemplateCard,
-        image: Game2,
-        name: "Game 2",
-        adsCount: 1,
-      },
-      {
-        ...TemplateCard,
-        image: Game3,
-        name: "Game 3",
-        adsCount: 2,
-      },
-      {
-        ...TemplateCard,
-        image: Game4,
-        name: "Game 4",
-        adsCount: 3,
-      },
-      {
-        ...TemplateCard,
-        image: Game5,
-        name: "Game 5",
-        adsCount: 4,
-      },
-      {
-        ...TemplateCard,
-        image: Game6,
-        name: "Game 6",
-        adsCount: 5,
-      },
-    ]);
-  }, []);
+type GameGridProps = {
+  games: Game[];
+};
+
+export function GameGrid({ games }: GameGridProps) {
   return (
     <motion.div
       initial={{
@@ -78,7 +42,15 @@ export function GameGrid() {
         className={`w-20 h-20 absolute text-zinc-400 top-1/2 transform -translate-y-1/2 left-[-80px] cursor-not-allowed z-50`}
       />
       {games.map((game, index) => (
-        <Card key={index} {...game} />
+        <Card
+          key={index}
+          image={game.bannerUrl}
+          name={game.name}
+          adsCount={game._count.ads}
+          onClick={() => {
+            console.log("clicked");
+          }}
+        />
       ))}
       <CaretRight
         className={`w-20 h-20 absolute text-white top-1/2 transform -translate-y-1/2 right-[-80px] cursor-pointer z-50`}
