@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AddAdToGameRequest, Game } from "../../api/types";
+import { AddAdToGameRequest, Game } from "api/types";
 import { Combobox, Transition } from "@headlessui/react";
 import { useGameStore } from "stores/gameStore";
 import { Fragment, useState } from "react";
@@ -10,10 +10,10 @@ import {
   Spinner,
 } from "phosphor-react";
 import { motion } from "framer-motion";
-import { IsModalToggled } from "../PublishAd";
+import { usePublishAdModal } from "atoms/usePublishAdModal";
 import { useAtom } from "jotai";
 import { WeekDayButton } from "./WeekDayButton";
-import * as api from "../../api";
+import * as api from "api/index";
 import { useToast } from "../Toast/useToast";
 
 const SearchGamesAnimationVariants = {
@@ -44,8 +44,7 @@ export function Form() {
     watch,
     formState: { errors },
   } = useForm<AddAdToGameRequest>();
-  const [isModalToggled, setIsModalToggled] = useAtom(IsModalToggled);
-
+  const publishAdModal = usePublishAdModal();
   const toast = useToast();
   const [selected, setSelected] = useState(games[0] ?? {});
   const [daysSelected, setDaysSelected] = useState<string[]>([]);
@@ -62,7 +61,7 @@ export function Form() {
     };
     postAd(body);
     toast.open();
-    setIsModalToggled(false);
+    publishAdModal.close();
     fetchGames();
   };
 
@@ -80,8 +79,6 @@ export function Form() {
       setDaysSelected([...daysSelected, value]);
     }
   };
-
-  console.log(errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
@@ -264,9 +261,7 @@ export function Form() {
         <button
           aria-label={"Botão publicar anuncio"}
           type={"button"}
-          onClick={() => {
-            setIsModalToggled(false);
-          }}
+          onClick={publishAdModal.close}
           className="bg-zinc-500 hover:bg-zinc-700 text-white font-bold py-3 px-5 rounded focus:outline-none focus:shadow-outline transition-all duration-200"
         >
           Cancelar

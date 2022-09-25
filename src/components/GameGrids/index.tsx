@@ -1,15 +1,9 @@
-import { useEffect } from "react";
-import { useState } from "react";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import { motion } from "framer-motion";
-import Game1 from "/game-1.png";
-import Game2 from "/game-2.png";
-import Game3 from "/game-3.png";
-import Game4 from "/game-4.png";
-import Game5 from "/game-5.png";
-import Game6 from "/game-6.png";
 import Card from "components/GameGrids/Card";
-import { Game } from "../../api/types";
+import { Game } from "api/types";
+import { useGameAdsModal } from "atoms/useGameAdsModal";
+import { useGameStore } from "stores/gameStore";
 
 const TemplateCard = {
   image: "",
@@ -23,6 +17,14 @@ type GameGridProps = {
 };
 
 export function GameGrid({ games }: GameGridProps) {
+  const gameAdsModal = useGameAdsModal();
+  const gameStore = useGameStore();
+
+  function handleCardClick(game: Game) {
+    gameAdsModal.toggle();
+    gameStore.fetchAdsByGame(game.id);
+  }
+
   return (
     <motion.div
       initial={{
@@ -48,7 +50,7 @@ export function GameGrid({ games }: GameGridProps) {
           name={game.name}
           adsCount={game._count.ads}
           onClick={() => {
-            console.log("clicked");
+            handleCardClick(game);
           }}
         />
       ))}

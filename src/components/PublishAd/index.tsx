@@ -2,16 +2,10 @@ import { MagnifyingGlassPlus } from "phosphor-react";
 import { motion } from "framer-motion";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
-
-export const IsModalToggled = atom(false);
+import { usePublishAdModal } from "atoms/usePublishAdModal";
 
 export const PublishAd = () => {
-  const [isModalToggled, setIsModalToggled] = useAtom(IsModalToggled);
-
-  const toggle = useCallback(() => {
-    setIsModalToggled(!isModalToggled);
-  }, [isModalToggled]);
-
+  const publishAdModal = usePublishAdModal();
   return (
     <motion.div
       initial={{
@@ -40,7 +34,7 @@ export const PublishAd = () => {
         aria-label="Botão publicar anúncio"
         type="button"
         className="h-12 gap-2 flex justify-center items-center p-4 rounded-xl bg-violet-500 text-white font-bold group hover:bg-transparent transition duration-200 hover:text-violet-500 hover:border-violet-500 border-2 border-transparent"
-        onClick={toggle}
+        onClick={publishAdModal.toggle}
       >
         <MagnifyingGlassPlus
           className="w-6 h-6 group-hover:text-violet-500 transition duration-200"

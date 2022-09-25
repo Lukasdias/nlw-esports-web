@@ -1,7 +1,7 @@
 export type Ad = {
   id: string;
   name: string;
-  weekdays: string[];
+  weekDays: string[];
   useVoiceChannel: boolean;
   yearsPlaying: number;
   hourEnd: number;

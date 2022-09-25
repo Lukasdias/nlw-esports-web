@@ -19,8 +19,9 @@ export async function getGames() {
 }
 
 export async function getDiscord(params: GetDiscordRequest) {
-  return (await axios.get(`${IP}:3333/ads/${params.adId}/discord`))
-    .data as string;
+  const res = await axios.get(`${IP}:3333/ads/${params.adId}/discord`);
+  const discord = res.data.discord;
+  return discord;
 }
 
 export async function getAdsByGame(params: GetAdsByGameRequest) {

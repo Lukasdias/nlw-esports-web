@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { atom, useAtom } from "jotai";
 import { useToast } from "./useToast";
-import { useGameStore } from "../../stores/gameStore";
+import { useGameStore } from "stores/gameStore";
 
 interface ToastProps {
   children: React.ReactNode;
