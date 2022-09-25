@@ -11,6 +11,10 @@
   "dependencies": {
     "@fontsource/inter": "^4.5.12",
     "@headlessui/react": "^1.7.1",
+    "@radix-ui/react-checkbox": "^1.0.0",
+    "@radix-ui/react-context-menu": "^1.0.0",
+    "@radix-ui/react-popover": "^1.0.0",
+    "@radix-ui/react-toast": "^1.0.0",
     "axios": "^0.27.2",
     "framer-motion": "^7.3.2",
     "immer": "^9.0.15",

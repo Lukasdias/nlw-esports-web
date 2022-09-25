@@ -1,5 +1,5 @@
 import create from "zustand";
-import { Ad, Game } from "../api/types";
+import { Ad, AddAdToGameRequest, Game } from "../api/types";
 import * as api from "../api";
 
 type GameStore = {
@@ -7,12 +7,17 @@ type GameStore = {
   loadingGames: boolean;
   currentAds: Ad[];
   loadingCurrentAds: boolean;
-  cleanCurrentAds: () => void;
   currentDiscord: string;
+  isSendingAd: boolean;
+  errorOnSendAd: boolean;
+  errorOnFetchGames: boolean;
+  errorOnFetchAds: boolean;
+  cleanCurrentAds: () => void;
   cleanCurrentDiscord: () => void;
   fetchGames: () => void;
   fetchDiscord: (adId: string) => void;
   fetchAdsByGame: (gameId: string) => void;
+  postAd: (body: AddAdToGameRequest) => void;
 };
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -20,8 +25,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   loadingGames: true,
   currentAds: [],
   loadingCurrentAds: false,
-  cleanCurrentAds: () => set({ currentAds: [] }),
   currentDiscord: "",
+  isSendingAd: false,
+  errorOnSendAd: false,
+  errorOnFetchGames: false,
+  errorOnFetchAds: false,
+  cleanCurrentAds: () => set({ currentAds: [] }),
   cleanCurrentDiscord: () => set({ currentDiscord: "" }),
   fetchGames: async () => {
     set({ loadingGames: true });
@@ -45,5 +54,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       currentAds: (await api.getAdsByGame({ gameId })) ?? ([] as Ad[]),
     });
+  },
+  postAd: async (body: AddAdToGameRequest) => {
+    try {
+      set({ isSendingAd: true });
+      await api.addAdToGame(body);
+    } catch (error) {
+      console.log(error);
+      set({ errorOnSendAd: true });
+      set({ isSendingAd: false });
+    } finally {
+      set({ isSendingAd: false });
+    }
   },
 }));

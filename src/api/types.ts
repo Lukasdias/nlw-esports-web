@@ -29,7 +29,7 @@ export type AddAdToGameRequest = {
   name: string;
   yearsPlaying: number;
   discord: string;
-  weekDays: string[];
+  weekDays: string;
   hourStart: string;
   hourEnd: string;
   useVoiceChannel: boolean;

@@ -3,11 +3,18 @@ import { AddAdToGameRequest, Game } from "../../api/types";
 import { Combobox, Transition } from "@headlessui/react";
 import { useGameStore } from "stores/gameStore";
 import { Fragment, useState } from "react";
-import { CheckSquare, ArrowsVertical, GameController } from "phosphor-react";
+import {
+  CheckSquare,
+  ArrowsVertical,
+  GameController,
+  Spinner,
+} from "phosphor-react";
 import { motion } from "framer-motion";
-import { IsModalToggled } from "../publishAd";
+import { IsModalToggled } from "../PublishAd";
 import { useAtom } from "jotai";
 import { WeekDayButton } from "./WeekDayButton";
+import * as api from "../../api";
+import { useToast } from "../Toast/useToast";
 
 const SearchGamesAnimationVariants = {
   hidden: {
@@ -21,6 +28,7 @@ const SearchGamesAnimationVariants = {
 };
 
 const WeekDays = [
+  { name: "D", value: "0" },
   { name: "S", value: "1" },
   { name: "T", value: "2" },
   { name: "Q", value: "3" },
@@ -29,26 +37,34 @@ const WeekDays = [
 ];
 
 export function Form() {
-  const { games } = useGameStore();
+  const { games, isSendingAd, postAd, fetchGames } = useGameStore();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<AddAdToGameRequest>();
-
-  const onSubmit: SubmitHandler<AddAdToGameRequest> = (data) =>
-    console.log({
-      ...data,
-      weekDays: daysSelected,
-    });
   const [isModalToggled, setIsModalToggled] = useAtom(IsModalToggled);
-  const [selected, setSelected] = useState(games);
+
+  const toast = useToast();
+  const [selected, setSelected] = useState(games[0] ?? {});
   const [daysSelected, setDaysSelected] = useState<string[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [query, setQuery] = useState("");
-  const HHMM12HourFormatOptionalLeading0Regex =
+  const HHMM24HourFormatOptionalLeading0Regex =
     /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+
+  const onSubmit: SubmitHandler<AddAdToGameRequest> = (data) => {
+    const body = {
+      ...data,
+      gameId: selected?.id,
+      weekDays: daysSelected.join(","),
+    };
+    postAd(body);
+    toast.open();
+    setIsModalToggled(false);
+    fetchGames();
+  };
 
   const filteredGames =
     query === ""
@@ -65,10 +81,17 @@ export function Form() {
     }
   };
 
+  console.log(errors);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <label className="block font-semibold text-white">Qual o game?</label>
-      <Combobox onChange={setSelected} as="div" className="relative w-full">
+      <Combobox
+        onChange={setSelected}
+        as="div"
+        className="relative w-full"
+        value={selected}
+      >
         <div className="relative mt-1">
           <div className="relative w-full">
             <Combobox.Input
@@ -185,12 +208,7 @@ export function Form() {
           <label className="flex flex-col font-semibold text-white items-center">
             Quando costuma jogar?
           </label>
-          <div
-            {...register("weekDays", {
-              required: true,
-            })}
-            className="flex flex-row flex-1 w-full"
-          >
+          <div className="flex flex-row flex-1 w-full">
             {WeekDays?.map((day, idx: number) => (
               <WeekDayButton
                 key={idx}
@@ -201,11 +219,6 @@ export function Form() {
               />
             ))}
           </div>
-          {errors.weekDays && (
-            <p className={"text-red-500 font-bold text-sm"}>
-              Selecione pelo menos um dia da semana
-            </p>
-          )}
         </div>
         <div className="w-full flex flex-col gap-2">
           <label className="flex flex-1 font-semibold text-white ">
@@ -217,7 +230,7 @@ export function Form() {
               placeholder="De"
               {...register("hourStart", {
                 required: true,
-                pattern: HHMM12HourFormatOptionalLeading0Regex,
+                pattern: HHMM24HourFormatOptionalLeading0Regex,
               })}
               className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
             />
@@ -226,7 +239,7 @@ export function Form() {
               placeholder="Até"
               {...register("hourEnd", {
                 required: true,
-                pattern: HHMM12HourFormatOptionalLeading0Regex,
+                pattern: HHMM24HourFormatOptionalLeading0Regex,
               })}
               className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
             />
@@ -247,7 +260,7 @@ export function Form() {
         </label>
       </div>
 
-      <div className="w-full flex justify-end gap-2">
+      <div className="w-full flex justify-end gap-2 flex-col-reverse sm:flex-row">
         <button
           aria-label={"Botão publicar anuncio"}
           type={"button"}
@@ -261,10 +274,19 @@ export function Form() {
         <button
           aria-label={"Botão publicar anuncio"}
           type={"submit"}
-          className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-3 px-5 rounded focus:outline-none focus:shadow-outline transition-all duration-200 gap-2 flex flex-row"
+          className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-3 px-5 rounded focus:outline-none text-sm justify-center focus:shadow-outline transition-all duration-200 gap-2 flex flex-row"
         >
-          <GameController className="w-6 h-6 text-white" />
-          Encontrar duo
+          {isSendingAd ? (
+            <Spinner
+              weight="bold"
+              className="w-6 h-6 text-white animate-spin"
+            />
+          ) : (
+            <>
+              <GameController className="w-6 h-6 text-white" />
+              Encontrar duo
+            </>
+          )}
         </button>
       </div>
     </form>

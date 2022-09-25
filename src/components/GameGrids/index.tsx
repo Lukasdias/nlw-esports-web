@@ -8,7 +8,7 @@ import Game3 from "/game-3.png";
 import Game4 from "/game-4.png";
 import Game5 from "/game-5.png";
 import Game6 from "/game-6.png";
-import Card from "components/gameGrids/card";
+import Card from "components/GameGrids/Card";
 import { Game } from "../../api/types";
 
 const TemplateCard = {

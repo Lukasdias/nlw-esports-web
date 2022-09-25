@@ -66,7 +66,7 @@ export function Modal({ children, isOpen, toggle, onClose }: ModalProps) {
                 <Dialog.Panel className="w-[95%] mx-auto max-w-[488px]  transform flex flex-col overflow-hidden rounded-2xl bg-background-secondary text-left align-middle shadow-xl transition-all px-10 py-8">
                   <Dialog.Title
                     as="h1"
-                    className="text-3xl font-[900] leading-6 sm:leading-10 text-white w-full flex mb-10 justify-between items-center relative "
+                    className="text-2xl  sm:text-3xl font-[900] leading-6 sm:leading-10 text-white w-full flex mb-10 justify-between items-center relative "
                   >
                     Publique um anúncio
                   </Dialog.Title>
