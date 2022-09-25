@@ -29,7 +29,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       set({
         games: (await api.getGames()) ?? ([] as Game[]),
       });
-      console.log("games", JSON.stringify(get().games, null, 2));
     } catch (error) {
       console.log(error);
       set({ loadingGames: false });

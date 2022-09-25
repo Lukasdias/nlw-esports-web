@@ -7,6 +7,7 @@ import { CheckSquare, ArrowsVertical, GameController } from "phosphor-react";
 import { motion } from "framer-motion";
 import { IsModalToggled } from "../publishAd";
 import { useAtom } from "jotai";
+import { WeekDayButton } from "./WeekDayButton";
 
 const SearchGamesAnimationVariants = {
   hidden: {
@@ -19,7 +20,16 @@ const SearchGamesAnimationVariants = {
   },
 };
 
+const WeekDays = [
+  { name: "S", value: "1" },
+  { name: "T", value: "2" },
+  { name: "Q", value: "3" },
+  { name: "Q", value: "4" },
+  { name: "S", value: "5" },
+];
+
 export function Form() {
+  const { games } = useGameStore();
   const {
     register,
     handleSubmit,
@@ -28,13 +38,17 @@ export function Form() {
   } = useForm<AddAdToGameRequest>();
 
   const onSubmit: SubmitHandler<AddAdToGameRequest> = (data) =>
-    console.log(data);
-  const { games } = useGameStore();
-
+    console.log({
+      ...data,
+      weekDays: daysSelected,
+    });
   const [isModalToggled, setIsModalToggled] = useAtom(IsModalToggled);
   const [selected, setSelected] = useState(games);
+  const [daysSelected, setDaysSelected] = useState<string[]>([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [query, setQuery] = useState("");
+  const HHMM12HourFormatOptionalLeading0Regex =
+    /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
   const filteredGames =
     query === ""
@@ -43,6 +57,14 @@ export function Form() {
           game.name.toLowerCase().includes(query.toLowerCase())
         );
 
+  const handleDayClick = (value: string) => {
+    if (daysSelected.includes(value)) {
+      setDaysSelected(daysSelected.filter((day) => day !== value));
+    } else {
+      setDaysSelected([...daysSelected, value]);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
       <label className="block font-semibold text-white">Qual o game?</label>
@@ -50,6 +72,7 @@ export function Form() {
         <div className="relative mt-1">
           <div className="relative w-full">
             <Combobox.Input
+              as={"input"}
               className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
               {...register("gameId", { required: true })}
               displayValue={(game: Game) => game?.name}
@@ -89,10 +112,15 @@ export function Form() {
                   {({ selected, active }) => (
                     <>
                       <span
-                        className={`block truncate ${
+                        className={`truncate flex items-center gap-2 ${
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >
+                        <img
+                          src={game.bannerUrl}
+                          alt={`${game.name} avatar`}
+                          className="w-5 h-5 rounded"
+                        />
                         {game.name}
                       </span>
                       {selected ? (
@@ -118,9 +146,9 @@ export function Form() {
       </label>
       <input
         type="text"
+        {...register("name", { required: true, min: 4, max: 25 })}
         placeholder={"Como te chamam dentro do game?"}
-        {...(register("name"), { required: true })}
-        className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
+        className="autofill:bg-zinc-900 w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
       />
 
       <div className="flex flex-col lg:flex-row w-full gap-3">
@@ -129,10 +157,14 @@ export function Form() {
             Joga há quantos anos?
           </label>
           <input
+            {...register("yearsPlaying", {
+              required: true,
+              min: 0,
+              max: 99,
+            })}
             placeholder={"Tudo bem ser ZERO"}
             type="number"
-            {...(register("yearsPlaying"), { required: true, min: 0 })}
-            className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
+            className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
           />
         </div>
         <div className="w-full flex flex-col gap-2">
@@ -141,23 +173,39 @@ export function Form() {
           </label>
           <input
             type="text"
+            {...register("discord", { required: true, min: 4, max: 25 })}
             placeholder={"Usuario#0000"}
-            {...(register("discord"), { required: true })}
-            className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
+            className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
           />
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row w-full gap-3">
         <div className="w-full flex flex-col gap-2">
-          <label className="flex flex-1 flex-col font-semibold text-white items-center">
+          <label className="flex flex-col font-semibold text-white items-center">
             Quando costuma jogar?
           </label>
-          <input
-            type="text"
-            {...(register("yearsPlaying"), { required: true })}
-            className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600"
-          />
+          <div
+            {...register("weekDays", {
+              required: true,
+            })}
+            className="flex flex-row flex-1 w-full"
+          >
+            {WeekDays?.map((day, idx: number) => (
+              <WeekDayButton
+                key={idx}
+                day={day.name}
+                value={day.value}
+                selected={daysSelected.includes(day.value) ? true : false}
+                selectDay={handleDayClick}
+              />
+            ))}
+          </div>
+          {errors.weekDays && (
+            <p className={"text-red-500 font-bold text-sm"}>
+              Selecione pelo menos um dia da semana
+            </p>
+          )}
         </div>
         <div className="w-full flex flex-col gap-2">
           <label className="flex flex-1 font-semibold text-white ">
@@ -167,14 +215,20 @@ export function Form() {
             <input
               type="string"
               placeholder="De"
-              {...(register("discord"), { required: true })}
-              className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
+              {...register("hourStart", {
+                required: true,
+                pattern: HHMM12HourFormatOptionalLeading0Regex,
+              })}
+              className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
             />
             <input
               type="string"
               placeholder="Até"
-              {...(register("discord"), { required: true })}
-              className="w-full bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
+              {...register("hourEnd", {
+                required: true,
+                pattern: HHMM12HourFormatOptionalLeading0Regex,
+              })}
+              className="w-full autofill:bg-zinc-900 bg-zinc-900 rounded placeholder:text-zinc-500 h-12 placeholder:text-sm  text-white px-4 py-3 transition-all duration-200 border-0 focus:outline-0 focus:ring-2 focus:ring-purple-600 focus:border-transparent focus:ring-offset-1 focus:ring-offset-purple-600 focus:outline-none"
             />
           </div>
         </div>
@@ -182,9 +236,11 @@ export function Form() {
 
       <div className="flex gap-2 my-2">
         <input
-          className="w-4 h-4 text-purple-500 bg-gray-100 rounded border-gray-300 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 focus:text-purple-800"
+          {...register("useVoiceChannel", {
+            required: true,
+          })}
+          className="w-4 h-4 autofill:bg-zinc-900 text-purple-500 bg-gray-100 rounded border-gray-300 focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 focus:text-purple-800"
           type="checkbox"
-          {...(register("useVoiceChannel"), { required: true })}
         />
         <label className="text-white text-sm">
           Costumo me conectar ao chat de voz

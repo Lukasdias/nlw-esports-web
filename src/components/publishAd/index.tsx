@@ -25,7 +25,7 @@ export const PublishAd = () => {
       transition={{
         delay: 0.6,
       }}
-      className="w-4/5 flex flex-col lg:flex-row items-center rounded-xl py-5 px-5 lg:py-8 lg:px-8 mt-12 mx-auto relative bg-[#2A2634] justify-between gap-2"
+      className="w-4/5  flex flex-col lg:flex-row items-center rounded-xl py-5 px-5 lg:py-8 lg:px-8 mt-12 mx-auto relative bg-[#2A2634] justify-between gap-2"
     >
       <div className="w-full h-2 absolute left-0 top-[-1px] bg-nlw-gradient rounded-t-xl" />
       <div className="gap-1 w-auto">

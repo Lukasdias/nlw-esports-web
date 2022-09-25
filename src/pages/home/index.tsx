@@ -24,11 +24,11 @@ function Home() {
   }, [isModalToggled]);
 
   return (
-    <div className="w-full min-h-screen flex flex-col py-4">
+    <div className="w-full min-h-screen flex flex-col">
       <Header />
       <GameGrid games={games} />
       <PublishAd />
-      <Modal isOpen={isModalToggled} onClose={toggle} toggle={toggle}>
+      <Modal isOpen={isModalToggled} onClose={() => {}} toggle={toggle}>
         <ModalForm />
       </Modal>
     </div>
