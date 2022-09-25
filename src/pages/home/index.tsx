@@ -46,7 +46,7 @@ function Home() {
   }, [errorOnFetchGames, errorOnSendAd]);
 
   return (
-    <div className="w-full min-h-screen flex flex-col">
+    <div className="w-full py-5 flex flex-col">
       <Header />
       <GameGrid games={games} />
       <PublishAd />

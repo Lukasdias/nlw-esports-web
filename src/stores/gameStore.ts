@@ -45,7 +45,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       });
     } catch (error) {
       console.log(error);
-      set({ loadingGames: false });
+      set({ errorOnFetchGames: true });
     } finally {
       set({ loadingGames: false });
     }

@@ -17,7 +17,7 @@ export function Toast({ children }: ToastProps) {
     if (toast.isOpen) {
       setTimeout(() => {
         toast.close();
-      }, 1000);
+      }, 3000);
     }
   }, [toast.isOpen]);
 

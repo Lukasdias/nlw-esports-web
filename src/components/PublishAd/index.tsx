@@ -1,11 +1,11 @@
 import { MagnifyingGlassPlus } from "phosphor-react";
 import { motion } from "framer-motion";
-import { atom, useAtom } from "jotai";
-import { useCallback } from "react";
 import { usePublishAdModal } from "atoms/usePublishAdModal";
+import { useGameStore } from "stores/gameStore";
 
 export const PublishAd = () => {
   const publishAdModal = usePublishAdModal();
+  const gameStore = useGameStore();
   return (
     <motion.div
       initial={{
@@ -33,7 +33,8 @@ export const PublishAd = () => {
       <button
         aria-label="Botão publicar anúncio"
         type="button"
-        className="h-12 gap-2 flex justify-center items-center p-4 rounded-xl bg-violet-500 text-white font-bold group hover:bg-transparent transition duration-200 hover:text-violet-500 hover:border-violet-500 border-2 border-transparent"
+        disabled={gameStore.errorOnFetchGames}
+        className="h-12 gap-2 flex justify-center items-center p-4 rounded-xl bg-violet-500 text-white font-bold group hover:bg-transparent transition duration-200 hover:text-violet-500 hover:border-violet-500 border-2 border-transparent disabled:bg-zinc-400 disabled:cursor-not-allowed disabled:hover:bg-zinc-700 disabled:hover:border-zinc-700 disabled:hover:text-zinc-700"
         onClick={publishAdModal.toggle}
       >
         <MagnifyingGlassPlus
