@@ -21,8 +21,11 @@
       "components/*": ["./src/components/*"],
       "pages/*": ["./src/pages/*"],
       "styles/*": ["./src/styles/*"],
-      "store/*": ["./src/store/*"],
-      "types/*": ["./src/types/*"]
+      "stores/*": ["./src/stores/*"],
+      "types/*": ["./src/types/*"],
+      "api/*": ["./src/api/*"],
+      "utils/*": ["./src/utils/*"],
+      "atoms/*": ["./src/atoms/*"]
     }
   },
   "include": ["src"],

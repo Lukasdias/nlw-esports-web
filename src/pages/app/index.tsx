@@ -1,4 +1,4 @@
-import { useDarkTheme } from "../../store/themeStore";
+import { useDarkTheme } from "stores/themeStore";
 import { useEffect } from "react";
 import Home from "pages/home";
 
@@ -11,7 +11,7 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="w-screen h-screen p-0 m-0 overflow-hidden">
+    <div className="w-screen h-screen px-0 m-0 overflow-hidden">
       <div className="w-full max-h-screen overflow-x-hidden overflow-y-auto flex flex-col">
         <Home />
       </div>
